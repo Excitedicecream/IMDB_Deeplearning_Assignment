@@ -282,7 +282,6 @@ elif input_mode == "Model Accuracy":
             "model_metrics.csv was not found. Please save the model metrics from the notebook "
             "and place the file in the same folder as Streamlit.py."
         )
-
     # ------------------------------------------------------------
     # TRAINING CURVES
     # ------------------------------------------------------------
@@ -290,21 +289,25 @@ elif input_mode == "Model Accuracy":
     try:
         history_df = pd.read_csv("gru_training_history.csv")
 
-        st.write("### Word2Vec + GRU Accuracy Curve")
+        col1, col2 = st.columns(2)
 
-        accuracy_chart_df = history_df.set_index("Epoch")[
-            ["Training Accuracy", "Validation Accuracy"]
-        ]
+        with col1:
+            st.write("### Accuracy Curve")
 
-        st.line_chart(accuracy_chart_df)
+            accuracy_chart_df = history_df.set_index("Epoch")[
+                ["Training Accuracy", "Validation Accuracy"]
+            ]
 
-        st.write("### Word2Vec + GRU Loss Curve")
+            st.line_chart(accuracy_chart_df)
 
-        loss_chart_df = history_df.set_index("Epoch")[
-            ["Training Loss", "Validation Loss"]
-        ]
+        with col2:
+            st.write("### Loss Curve")
 
-        st.line_chart(loss_chart_df)
+            loss_chart_df = history_df.set_index("Epoch")[
+                ["Training Loss", "Validation Loss"]
+            ]
+
+            st.line_chart(loss_chart_df)
 
         history_csv = history_df.to_csv(index=False).encode("utf-8")
 
@@ -318,9 +321,8 @@ elif input_mode == "Model Accuracy":
     except FileNotFoundError:
         st.warning(
             "gru_training_history.csv was not found. Please save the GRU training history "
-            "from the notebook and place the file in the same folder as Streamlit.py."
+            "from the notebook and place it in the same folder as Streamlit.py."
         )
-
 # ============================================================
 # MODEL INFO
 # ============================================================
