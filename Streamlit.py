@@ -248,45 +248,37 @@ elif input_mode == "Upload CSV File":
 elif input_mode == "Model Accuracy":
     st.subheader("Model Accuracy and Evaluation Results")
 
-    st.write(
-        "This page shows the evaluation results of the trained **Word2Vec + GRU** model. "
-        "The model was evaluated using accuracy, precision, recall, and F1-score."
+    # Metrics based on your final GRU model results
+    metrics_df = pd.DataFrame({
+        "Metric": ["Accuracy", "Precision", "Recall", "F1-score"],
+        "Score": [0.8976, 0.9223, 0.8683, 0.8945]
+    })
+
+    st.write("### Evaluation Metrics")
+    st.dataframe(metrics_df, use_container_width=True)
+
+    # Download table as CSV
+    metrics_csv = metrics_df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        label="Download Accuracy Table as CSV",
+        data=metrics_csv,
+        file_name="model_accuracy_results.csv",
+        mime="text/csv"
     )
 
-    try:
-        metrics_df = pd.read_csv("model_metrics.csv")
+    st.write("### Interpretation")
 
-        st.write("### Evaluation Metrics")
-        st.dataframe(metrics_df, use_container_width=True)
+    st.write("**Accuracy:** 0.8976")
+    st.write("**Precision:** 0.9223")
+    st.write("**Recall:** 0.8683")
+    st.write("**F1-score:** 0.8945")
 
-        chart_df = metrics_df.set_index("Model")[["Accuracy", "Precision", "Recall", "F1-score"]]
-
-        st.write("### Model Performance Chart")
-        st.bar_chart(chart_df.T)
-
-        st.write("### Interpretation")
-
-        accuracy = metrics_df["Accuracy"].iloc[0]
-        precision = metrics_df["Precision"].iloc[0]
-        recall = metrics_df["Recall"].iloc[0]
-        f1 = metrics_df["F1-score"].iloc[0]
-
-        st.write(f"**Accuracy:** {accuracy:.4f}")
-        st.write(f"**Precision:** {precision:.4f}")
-        st.write(f"**Recall:** {recall:.4f}")
-        st.write(f"**F1-score:** {f1:.4f}")
-
-        st.info(
-            "The F1-score is the main evaluation metric because it balances precision and recall. "
-            "This is useful for sentiment classification because it gives a clearer view of how well "
-            "the model performs across both positive and negative reviews."
-        )
-
-    except FileNotFoundError:
-        st.warning(
-            "model_metrics.csv was not found. Please save the model metrics from the notebook "
-            "and place the file in the same folder as Streamlit.py."
-        )
+    st.info(
+        "The F1-score is the main evaluation metric because it balances precision and recall. "
+        "This is useful for sentiment classification because it gives a clearer view of how well "
+        "the model performs across both positive and negative reviews."
+    )
 
 # ============================================================
 # MODEL INFO
