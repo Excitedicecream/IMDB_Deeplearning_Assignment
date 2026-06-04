@@ -249,21 +249,23 @@ elif input_mode == "Model Accuracy":
     st.subheader("Model Accuracy and Evaluation Results")
 
     st.write(
-        "This page shows the evaluation results of the trained **Word2Vec + GRU** model. "
-        "The model was evaluated using accuracy, precision, recall, and F1-score."
+        "This page shows the evaluation results and training curves of the trained "
+        "**Word2Vec + GRU** model."
     )
+
+    # ------------------------------------------------------------
+    # INTERPRETATION / FINAL METRICS
+    # ------------------------------------------------------------
 
     try:
         metrics_df = pd.read_csv("model_metrics.csv")
-
-    
-        st.write("### Interpretation")
 
         accuracy = metrics_df["Accuracy"].iloc[0]
         precision = metrics_df["Precision"].iloc[0]
         recall = metrics_df["Recall"].iloc[0]
         f1 = metrics_df["F1-score"].iloc[0]
 
+        st.write("### Interpretation")
         st.write(f"**Accuracy:** {accuracy:.4f}")
         st.write(f"**Precision:** {precision:.4f}")
         st.write(f"**Recall:** {recall:.4f}")
@@ -273,6 +275,12 @@ elif input_mode == "Model Accuracy":
             "The F1-score is the main evaluation metric because it balances precision and recall. "
             "This is useful for sentiment classification because it gives a clearer view of how well "
             "the model performs across both positive and negative reviews."
+        )
+
+    except FileNotFoundError:
+        st.warning(
+            "model_metrics.csv was not found. Please save the model metrics from the notebook "
+            "and place the file in the same folder as Streamlit.py."
         )
 
     # ------------------------------------------------------------
@@ -298,10 +306,6 @@ elif input_mode == "Model Accuracy":
 
         st.line_chart(loss_chart_df)
 
-        # ------------------------------------------------------------
-        # DOWNLOAD TRAINING HISTORY CSV
-        # ------------------------------------------------------------
-
         history_csv = history_df.to_csv(index=False).encode("utf-8")
 
         st.download_button(
@@ -314,7 +318,7 @@ elif input_mode == "Model Accuracy":
     except FileNotFoundError:
         st.warning(
             "gru_training_history.csv was not found. Please save the GRU training history "
-            "from the notebook and place it in the same folder as Streamlit.py."
+            "from the notebook and place the file in the same folder as Streamlit.py."
         )
 
 # ============================================================
