@@ -248,37 +248,74 @@ elif input_mode == "Upload CSV File":
 elif input_mode == "Model Accuracy":
     st.subheader("Model Accuracy and Evaluation Results")
 
-    # Metrics based on your final GRU model results
-    metrics_df = pd.DataFrame({
-        "Metric": ["Accuracy", "Precision", "Recall", "F1-score"],
-        "Score": [0.8976, 0.9223, 0.8683, 0.8945]
-    })
-
-    st.write("### Evaluation Metrics")
-    st.dataframe(metrics_df, use_container_width=True)
-
-    # Download table as CSV
-    metrics_csv = metrics_df.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-        label="Download Accuracy Table as CSV",
-        data=metrics_csv,
-        file_name="model_accuracy_results.csv",
-        mime="text/csv"
+    st.write(
+        "This page shows the evaluation results of the trained **Word2Vec + GRU** model. "
+        "The model was evaluated using accuracy, precision, recall, and F1-score."
     )
 
-    st.write("### Interpretation")
+    try:
+        metrics_df = pd.read_csv("model_metrics.csv")
 
-    st.write("**Accuracy:** 0.8976")
-    st.write("**Precision:** 0.9223")
-    st.write("**Recall:** 0.8683")
-    st.write("**F1-score:** 0.8945")
+    
+        st.write("### Interpretation")
 
-    st.info(
-        "The F1-score is the main evaluation metric because it balances precision and recall. "
-        "This is useful for sentiment classification because it gives a clearer view of how well "
-        "the model performs across both positive and negative reviews."
-    )
+        accuracy = metrics_df["Accuracy"].iloc[0]
+        precision = metrics_df["Precision"].iloc[0]
+        recall = metrics_df["Recall"].iloc[0]
+        f1 = metrics_df["F1-score"].iloc[0]
+
+        st.write(f"**Accuracy:** {accuracy:.4f}")
+        st.write(f"**Precision:** {precision:.4f}")
+        st.write(f"**Recall:** {recall:.4f}")
+        st.write(f"**F1-score:** {f1:.4f}")
+
+        st.info(
+            "The F1-score is the main evaluation metric because it balances precision and recall. "
+            "This is useful for sentiment classification because it gives a clearer view of how well "
+            "the model performs across both positive and negative reviews."
+        )
+
+    # ------------------------------------------------------------
+    # TRAINING CURVES
+    # ------------------------------------------------------------
+
+    try:
+        history_df = pd.read_csv("gru_training_history.csv")
+
+        st.write("### Word2Vec + GRU Accuracy Curve")
+
+        accuracy_chart_df = history_df.set_index("Epoch")[
+            ["Training Accuracy", "Validation Accuracy"]
+        ]
+
+        st.line_chart(accuracy_chart_df)
+
+        st.write("### Word2Vec + GRU Loss Curve")
+
+        loss_chart_df = history_df.set_index("Epoch")[
+            ["Training Loss", "Validation Loss"]
+        ]
+
+        st.line_chart(loss_chart_df)
+
+        # ------------------------------------------------------------
+        # DOWNLOAD TRAINING HISTORY CSV
+        # ------------------------------------------------------------
+
+        history_csv = history_df.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            label="Download Training History CSV",
+            data=history_csv,
+            file_name="gru_training_history.csv",
+            mime="text/csv"
+        )
+
+    except FileNotFoundError:
+        st.warning(
+            "gru_training_history.csv was not found. Please save the GRU training history "
+            "from the notebook and place it in the same folder as Streamlit.py."
+        )
 
 # ============================================================
 # MODEL INFO
