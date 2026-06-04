@@ -105,7 +105,7 @@ st.sidebar.header("Input Options")
 
 input_mode = st.sidebar.radio(
     "Choose input type:",
-    ["Example Reviews", "Manual Text Input", "Upload CSV File"]
+    ["Example Reviews", "Manual Text Input", "Upload CSV File", "Model Accuracy"]
 )
 
 
