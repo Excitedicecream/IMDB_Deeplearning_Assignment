@@ -179,6 +179,29 @@ elif input_mode == "Upload CSV File":
         "The file should have a column named **review** or **text**."
     )
 
+    # ------------------------------------------------------------
+    # SAMPLE CSV DOWNLOAD FOR LECTURER / USER
+    # ------------------------------------------------------------
+
+    sample_df = pd.DataFrame({
+        "review": [
+            "This movie was amazing. The acting was excellent and the story was very enjoyable.",
+            "The film was boring and too long. I would not recommend it.",
+            "It was not bad, but I expected something more exciting.",
+            "The visuals were beautiful, but the plot was weak and confusing.",
+            "I loved this movie. It was emotional, funny, and very well directed."
+        ]
+    })
+
+    sample_csv = sample_df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        label="Download Sample CSV File",
+        data=sample_csv,
+        file_name="sample_reviews.csv",
+        mime="text/csv"
+    )
+
     uploaded_file = st.file_uploader(
         "Upload your CSV file:",
         type=["csv"]
@@ -223,7 +246,6 @@ elif input_mode == "Upload CSV File":
                 file_name="sentiment_predictions.csv",
                 mime="text/csv"
             )
-
 
 # ============================================================
 # MODEL INFO
