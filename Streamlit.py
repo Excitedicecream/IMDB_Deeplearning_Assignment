@@ -71,20 +71,18 @@ def predict_sentiment(texts):
 
     results = []
 
-    for original, cleaned, prob in zip(texts, cleaned_texts, probabilities):
+    for original, prob in zip(texts, probabilities):
         sentiment = "Positive" if prob >= 0.5 else "Negative"
         confidence = prob if sentiment == "Positive" else 1 - prob
 
         results.append({
-            "Original Review": original,
-            "Cleaned Review": cleaned,
+            "Review": original,
             "Positive Probability": round(float(prob), 4),
-            "Predicted Sentiment": sentiment,
+            "Result": sentiment,
             "Confidence": round(float(confidence), 4)
         })
 
     return pd.DataFrame(results)
-
 
 
 # ============================================================
@@ -158,7 +156,7 @@ elif input_mode == "Manual Text Input":
             st.subheader("Prediction Result")
             st.dataframe(output_df, use_container_width=True)
 
-            sentiment = output_df["Predicted Sentiment"].iloc[0]
+            sentiment = output_df["Result"].iloc[0]
             confidence = output_df["Confidence"].iloc[0]
 
             if sentiment == "Positive":
@@ -180,7 +178,7 @@ elif input_mode == "Upload CSV File":
     )
 
     # ------------------------------------------------------------
-    # SAMPLE CSV DOWNLOAD FOR LECTURER / USER
+    # SAMPLE CSV DOWNLOAD
     # ------------------------------------------------------------
 
     sample_df = pd.DataFrame({
@@ -228,12 +226,7 @@ elif input_mode == "Upload CSV File":
         if st.button("Predict Uploaded Reviews"):
             reviews = uploaded_df[review_column].astype(str).tolist()
 
-            prediction_df = predict_sentiment(reviews)
-
-            final_df = pd.concat(
-                [uploaded_df.reset_index(drop=True), prediction_df.reset_index(drop=True)],
-                axis=1
-            )
+            final_df = predict_sentiment(reviews)
 
             st.subheader("Prediction Results")
             st.dataframe(final_df, use_container_width=True)
@@ -246,6 +239,7 @@ elif input_mode == "Upload CSV File":
                 file_name="sentiment_predictions.csv",
                 mime="text/csv"
             )
+
 
 # ============================================================
 # MODEL INFO
