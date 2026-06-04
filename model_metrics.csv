@@ -1,0 +1,2 @@
+Model,Accuracy,Precision,Recall,F1-score
+Word2Vec + GRU,0.8976,0.922331747110809,0.86832,0.8945112905884292
